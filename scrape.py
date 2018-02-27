@@ -11,11 +11,17 @@ r = http.request('GET',DOMAIN+account)
 
 soup = BeautifulSoup(r.data,'html.parser')
 
+
 def getVals(page):
     x = page.find_all('span', class_='ProfileNav-value')
     l = []
     for element in x:
-        l.append(element.get_attribute_list('data-count'))
+        string = element.get_attribute_list('data-count')
+        string = string[0]
+        print(string)
+        if string != None:
+            l.append(string)
+
 
     return l
 
@@ -28,9 +34,26 @@ def isVerified(page):
     else:
         return 0
 
+class profile():
+    def __init__(self,numbers,verified):
+        self.friend_count=int(numbers[2])
+        self.follower_count=int(numbers[1])
+        self.verified=verified
+        self.status_count=int(numbers[0])
+
+    def __str__(self):
+        x ="Friends count = %d , follower count = %d, " % (self.friend_count,self.follower_count)
+        return x
+
+
+
 
 numbers = getVals(soup)
 verified = isVerified(soup)
 
 print(verified)
 print(numbers)
+
+x = profile(numbers,verified)
+
+print(x)
