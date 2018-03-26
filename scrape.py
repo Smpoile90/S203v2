@@ -3,7 +3,6 @@ from bs4 import BeautifulSoup
 
 
 def pickName(account):
-
     http = urllib3.PoolManager()
     DOMAIN= 'https://twitter.com/'
     r = http.request('GET',DOMAIN+account)
@@ -34,7 +33,7 @@ def isVerified(page):
 def profile(numbers,verified):
     ds = {'friend_count':[int(numbers[2])],
         'follower_count':[int(numbers[1])],
-        'verified':[int(verified)],
+        'verified':[verified],
         'status_count':[int(numbers[0])]
         }
     return ds

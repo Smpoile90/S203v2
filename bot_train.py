@@ -4,10 +4,14 @@ from __future__ import print_function
 
 import argparse
 import tensorflow as tf
+import serv
 
 import iris_data
 import scrape
 
+EXPORT_PATH='myModel'
+
+init = False
 parser = argparse.ArgumentParser()
 parser.add_argument('--batch_size', default=100, type=int, help='batch size')
 parser.add_argument('--train_steps', default=1000, type=int,
@@ -110,25 +114,6 @@ def main(argv):
 
         print(template.format(iris_data.SPECIES[class_id],
                               100 * probability, expec))
-
-
-    olliesPrediction =['NOT']
-
-    x = scrape.getName('NerdGarbageBot')
-
-    olliesResult = classifier.predict(
-        input_fn=lambda:iris_data.eval_input_fn(x,
-                                                labels=None,batch_size=1))
-
-    for pred_dict, expec in zip(olliesResult, olliesPrediction):
-        template = ('\nPrediction is "{}" ({:.1f}%), expected "{}"')
-
-        class_id = pred_dict['class_ids'][0]
-        probability = pred_dict['probabilities'][class_id]
-        print(template.format(iris_data.SPECIES[class_id],
-
-                              100 * probability, expec))
-
 
 
 
