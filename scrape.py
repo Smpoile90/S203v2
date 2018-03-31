@@ -1,5 +1,6 @@
 import urllib3
 from bs4 import BeautifulSoup
+import re
 
 
 def pickName(account):
@@ -11,15 +12,28 @@ def pickName(account):
 
 
 def getVals(page):
-    x = page.find_all('span', class_='ProfileNav-value')
-    l = []
-    for element in x:
-        string = element.get_attribute_list('data-count')
-        string = string[0]
-        if string != None:
-            l.append(string)
+    dict = {}
+    fields=['tweets is-active','following','followers','favourites' ,'moments']
+    for field in fields:
+        mainTag = page.find('li', class_='ProfileNav-item ProfileNav-item--'+field)
+        if mainTag is not None:
+            valueTag = mainTag.find('span', class_='ProfileNav-value')
+            if valueTag is not None:
+                string = str(valueTag)
+                try:
+                    value = int(string.split("\"")[3])
+                except:
+                    value = valueTag.contents
+                dict[field] = value
+            else:
+                value = 0
+        else:
+            dict[field] = 0
+    dict['verified']  = isVerified(page)
+    dict['tweets']= dict['tweets is-active']
+    del dict['tweets is-active']
+    return dict
 
-    return l
 
 
 ##Looks for verified badge returns 1 for verified
@@ -41,9 +55,7 @@ def profile(numbers,verified):
 def getName(name):
     soup = pickName(name)
     numbers = getVals(soup)
-    verified = isVerified(soup)
-    x = profile(numbers, verified)
-    return x
+    return numbers
 
 
 

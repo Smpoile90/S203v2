@@ -1,18 +1,25 @@
 import scrape
-from collections import defaultdict
+import csv
 
 file = open('names', mode='r')
-list = []
+listOfNames = []
 for line in file:
-    list.append(line[1:])
+    listOfNames.append(line[1:].rstrip())
 
-dict = defaultdict()
-for name in list:
-    try:
-        d2 = scrape.getName(name)
-        dict.update(d2)
-    except:
-        pass
+dict= {'name':[],'tweets':[],'following':[],'followers':[],'favourites':[],'moments':[],'verified':[],'BOT':[]}
 
-for item in dict.items():
-    print(item)
+for name in listOfNames:
+    d2 = scrape.getName(name)
+    for k,v in d2.items():
+        dict[k].append(v)
+    dict['name'].append(name)
+    dict['BOT'].append(1)
+
+
+keys = sorted(dict.keys())
+with open('bots.csv',mode='w') as csvFile:
+    writer = csv.writer(csvFile,lineterminator='\n')
+    writer.writerow(keys)
+    writer.writerows(zip(*[dict[key] for key in keys]))
+
+
