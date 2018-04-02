@@ -23,7 +23,7 @@ def getVals(page):
                 try:
                     value = int(string.split("\"")[3])
                 except:
-                    value = valueTag.contents
+                    value = int(valueTag.contents[0])
                 dict[field] = value
             else:
                 value = 0
@@ -33,8 +33,6 @@ def getVals(page):
     dict['tweets']= dict['tweets is-active']
     del dict['tweets is-active']
     return dict
-
-
 
 ##Looks for verified badge returns 1 for verified
 def isVerified(page):
@@ -54,8 +52,12 @@ def profile(numbers,verified):
 
 def getName(name):
     soup = pickName(name)
+    if soup.find('title').contents[0]=='Twitter / ?':
+        return None
     numbers = getVals(soup)
+    numbers['name'] = name
     return numbers
+
 
 
 

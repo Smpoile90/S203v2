@@ -2,13 +2,12 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 from flask import Flask, jsonify
-import urllib3
 import scrape
 import argparse
 import tensorflow as tf
-
 import iris_data
 import scrape
+import Mongo2
 
 app = Flask(__name__)
 
@@ -104,24 +103,9 @@ def main(argv):
 
     app.run(debug=True)
 
-
-tasks = [
-    {
-        'id': 1,
-        'title': u'Buy groceries',
-        'description': u'Milk, Cheese, Pizza, Fruit, Tylenol',
-        'done': False
-    },
-    {
-        'id': 2,
-        'title': u'Learn Python',
-        'description': u'Need to find a good Python tutorial on the web',
-        'done': False
-    }
-]
-
-
+##Evaluate is used on newly scraped data
 def evaluate(data):
+    data = {k:[v] for (k,v) in zip(data.keys(),data.values())}
 
     prediction = classifier.predict(input_fn=lambda: iris_data.eval_input_fn(data,
                                                                               labels=None,
@@ -129,38 +113,30 @@ def evaluate(data):
 
     x = next(prediction)
     classification = x['class_ids'][0]
+    probability = x['probabilities'][classification] *100
     what= iris_data.SPECIES[classification]
-    print(what)
-    return what
+    return what,probability
 
-
-
-
-@app.route('/')
-def index():
-    return "Hello, World!"
-
-
-@app.route('/app/api/v1.0/tasks', methods=['GET'])
-def get_tasks():
-    return jsonify({'tasks': tasks})
-
-
-@app.route('/app/api/v1.0/getName/<string:name>', methods=['GET'])
+@app.route('/<string:name>')
 def evaluateName(name):
-    data = scrape.getName(name)
-    x = evaluate(data)
-    data['bot'] = x
-    print (data)
+    ##First query the db
+    x = Mongo2.queryUname(name)
+    ##If db returns nothing
+    if x is None:
+        data = scrape.getName(name)
+        if data is None:
+            data = {'name':'Does not exist'}
+            return jsonify(data)
+        data.pop('name')
+        botvalue,probability = evaluate(data)
+        data['bot'],data['probability'],data['name'] = botvalue, probability, name
+        Mongo2.insertOrUpdate(data)
+        data.pop('_id')
+
+    else:
+        data = x
 
     return jsonify(data)
-
-
-def response(botdata):
-    http = urllib3.PoolManager()
-    DOMAIN = 'http://127.0.0.1:5000'
-    r = http.request('POST', DOMAIN, botdata)
-
 
 if __name__ == '__main__':
     tf.logging.set_verbosity(tf.logging.INFO)

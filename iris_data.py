@@ -2,19 +2,22 @@ import pandas as pd
 import tensorflow as tf
 
 
-CSV_COLUMN_NAMES = ['friend_count','follower_count','verified' ,'status_count','bot']
+CSV_COLUMN_NAMES = ['BOT','favourites','followers','following','moments','name','tweets','verified']
 
 SPECIES = ['NOT', 'BOT']
 
-train_path = '~/Documents/SEC203DAT/Train1.csv'
-test_path = '~/Documents/SEC203DAT/Test1.csv'
+train_path = 'bots.csv' #~\Documents\SEC203DAT\Train1
+test_path = 'bots.csv' #~\Documents\SEC203DATTest1
 
 
-def load_data(y_name='bot'):
+def load_data(y_name='BOT'):
     train = pd.read_csv(filepath_or_buffer=train_path,
                         names=CSV_COLUMN_NAMES,  # list of column names
                         header=0  # ignore the first row of the CSV file.
                        )
+
+    ###This line removes the Username which is essential with this setup.
+    train.pop('name')
     train_x, train_y = train, train.pop(y_name)
 
     test = pd.read_csv(test_path, names=CSV_COLUMN_NAMES, header=0)
@@ -70,7 +73,7 @@ def _parse_line(line):
     features = dict(zip(CSV_COLUMN_NAMES, fields))
 
     # Separate the label from the features
-    label = features.pop('bot')
+    label = features.pop('BOT')
 
     return features, label
 

@@ -32,7 +32,29 @@ Wdatabase = Wclient["TwitterDB"]  # database to use
 WCollection = Wdatabase["simonsTestData"]  # collection to use
 
 
-data = scrape.getName('realDonaldTrump')
-jdata= json.dumps(data)
-print(json.dumps(data,indent=4, sort_keys='true'))
-WCollection.insert(data)
+def insertAccount(data):
+    print(json.dumps(data, indent=4, sort_keys='true'))
+    WCollection.insert(data)
+
+def updateAccount(data):
+    if data is None:
+        return
+    print(json.dumps(data, indent=4, sort_keys='true'))
+    WCollection.update(data,data)
+
+def queryUname(name):
+    qdict = {}
+    qdict['name'] = name
+    recordGenerator = RCollection.find(qdict)
+    try:
+        record = recordGenerator.next()
+        record.pop('_id')
+    except:
+        record = None
+    return record
+
+def insertOrUpdate(name):
+    try:
+        insertAccount(name)
+    except:
+        updateAccount(name)

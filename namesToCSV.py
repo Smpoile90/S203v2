@@ -2,11 +2,18 @@ import scrape
 import csv
 
 file = open('names', mode='r')
+fileNotBots=open('notBotNames',mode='r')
 listOfNames = []
+
+for line in file:
+    listOfNames.append(line[1:].rstrip())
+
+listOfNotBots= []
 for line in file:
     listOfNames.append(line[1:].rstrip())
 
 dict= {'name':[],'tweets':[],'following':[],'followers':[],'favourites':[],'moments':[],'verified':[],'BOT':[]}
+
 
 for name in listOfNames:
     d2 = scrape.getName(name)
