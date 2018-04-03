@@ -36,8 +36,9 @@ def getVals(page):
 
 ##Looks for verified badge returns 1 for verified
 def isVerified(page):
-    x=page.find_all('span', class_='ProfileHeaderCard-badges')
-    if x != []:
+    x=page.find('span', class_='Icon Icon--verified')
+
+    if x is not None:
         return 1
     else:
         return 0
@@ -57,6 +58,4 @@ def getName(name):
     numbers = getVals(soup)
     numbers['name'] = name
     return numbers
-
-
 
