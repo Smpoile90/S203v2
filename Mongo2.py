@@ -19,7 +19,7 @@ Server_URL = "mongo.ope.uk.net"
 Server_Port = "27017"
 MC = "mongodb://{}:{}@{}:{}/?authSource={}"
 
-###admin	xATvY39CqQeaFWfh
+
 
 ## Reader connection
 Rclient = MongoClient(MC.format(Read_User_Name, Read_Password, Server_URL, Server_Port, User_authSource))  # Connection string

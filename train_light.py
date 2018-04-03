@@ -6,7 +6,7 @@ import argparse
 import tensorflow as tf
 import serv
 
-import iris_data
+import take_in_data
 import scrape
 
 
@@ -62,7 +62,7 @@ def my_model(features, labels, mode, params):
 args = parser.parse_args()
 
 # Fetch the data
-(train_x, train_y), (test_x, test_y) = iris_data.load_data()
+(train_x, train_y), (test_x, test_y) = take_in_data.load_data()
 
 # Feature columns describe how to use the input.
 my_feature_columns = []
@@ -82,12 +82,12 @@ classifier = tf.estimator.Estimator(
 
 # Train the Model.
 classifier.train(
-    input_fn=lambda:iris_data.train_input_fn(train_x, train_y, args.batch_size),
+    input_fn=lambda:take_in_data.train_input_fn(train_x, train_y, args.batch_size),
     steps=args.train_steps)
 
 # Evaluate the model.
 eval_result = classifier.evaluate(
-    input_fn=lambda:iris_data.eval_input_fn(test_x, test_y, args.batch_size))
+    input_fn=lambda:take_in_data.eval_input_fn(test_x, test_y, args.batch_size))
 
 print('\nTest set accuracy: {accuracy:0.3f}\n'.format(**eval_result))
 
@@ -100,9 +100,9 @@ predict_x = {
     'status_count': [690, 8091871, 9358],
 }
 predictions = classifier.predict(
-    input_fn=lambda:iris_data.eval_input_fn(predict_x,
-                                            labels=None,
-                                            batch_size=args.batch_size))
+    input_fn=lambda:take_in_data.eval_input_fn(predict_x,
+                                               labels=None,
+                                               batch_size=args.batch_size))
 
 for pred_dict, expec in zip(predictions, expected):
     template = ('\nPrediction is "{}" ({:.1f}%), expected "{}"')
@@ -110,13 +110,13 @@ for pred_dict, expec in zip(predictions, expected):
     class_id = pred_dict['class_ids'][0]
     probability = pred_dict['probabilities'][class_id]
 
-    print(template.format(iris_data.SPECIES[class_id],
+    print(template.format(take_in_data.SPECIES[class_id],
                           100 * probability, expec))
 
 def evaluate(data):
-    prediction = classifier.predict(input_fn=lambda:iris_data.eval_input_fn(data,
-                                                labels=None,
-                                                batch_size=1))
+    prediction = classifier.predict(input_fn=lambda:take_in_data.eval_input_fn(data,
+                                                                               labels=None,
+                                                                               batch_size=1))
 
 
 

@@ -6,8 +6,8 @@ CSV_COLUMN_NAMES = ['BOT','favourites','followers','following','moments','name',
 
 SPECIES = ['NOT', 'BOT']
 
-train_path = 'bots.csv' #~\Documents\SEC203DAT\Train1
-test_path = 'bots.csv' #~\Documents\SEC203DATTest1
+train_path = 'train.csv' #~\Documents\SEC203DAT\Train1
+test_path = 'test.csv' #~\Documents\SEC203DATTest1
 
 
 def load_data(y_name='BOT'):
