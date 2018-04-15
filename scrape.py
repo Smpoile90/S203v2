@@ -2,7 +2,6 @@ import urllib3
 from bs4 import BeautifulSoup
 import re
 
-
 def pickName(account):
     http = urllib3.PoolManager()
     DOMAIN= 'https://twitter.com/'
@@ -31,8 +30,14 @@ def getVals(page):
             dict[field] = 0
     dict['verified']  = isVerified(page)
     dict['tweets']= dict['tweets is-active']
+    dict['image']= getImage(page)
     del dict['tweets is-active']
     return dict
+
+def getImage(page):
+    imagetag = re.search('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+',(str(page.find('img', class_='ProfileAvatar-image')))).group(0)
+    return imagetag
+
 
 ##Looks for verified badge returns 1 for verified
 def isVerified(page):
@@ -58,4 +63,3 @@ def getName(name):
     numbers = getVals(soup)
     numbers['name'] = name
     return numbers
-
