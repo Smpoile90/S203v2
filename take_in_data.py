@@ -77,16 +77,12 @@ def _parse_line(line):
 
     return features, label
 
-
 def csv_input_fn(csv_path, batch_size):
     # Create a dataset containing the text lines.
     dataset = tf.data.TextLineDataset(csv_path).skip(1)
-
     # Parse each line.
     dataset = dataset.map(_parse_line)
-
     # Shuffle, repeat, and batch the examples.
     dataset = dataset.shuffle(1000).repeat().batch(batch_size)
-
     # Return the dataset.
     return dataset

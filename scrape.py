@@ -2,6 +2,7 @@ import urllib3
 from bs4 import BeautifulSoup
 import re
 
+
 def pickName(account):
     http = urllib3.PoolManager()
     DOMAIN= 'https://twitter.com/'
@@ -42,7 +43,6 @@ def getImage(page):
 ##Looks for verified badge returns 1 for verified
 def isVerified(page):
     x=page.find('span', class_='Icon Icon--verified')
-
     if x is not None:
         return 1
     else:

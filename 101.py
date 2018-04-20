@@ -10,9 +10,6 @@ import scrape
 import Mongo2
 
 app = Flask(__name__)
-
-EXPORT_PATH = 'myModel'
-
 init = False
 parser = argparse.ArgumentParser()
 parser.add_argument('--batch_size', default=100, type=int, help='batch size')
@@ -20,7 +17,6 @@ parser.add_argument('--train_steps', default=1000, type=int,
                     help='number of training steps')
 
 classifier = None
-
 
 def my_model(features, labels, mode, params):
     """DNN with three hidden layers, and dropout of 0.1 probability."""
@@ -63,7 +59,6 @@ def my_model(features, labels, mode, params):
     optimizer = tf.train.AdagradOptimizer(learning_rate=0.1)
     train_op = optimizer.minimize(loss, global_step=tf.train.get_global_step())
     return tf.estimator.EstimatorSpec(mode, loss=loss, train_op=train_op)
-
 
 def main(argv):
     global classifier
