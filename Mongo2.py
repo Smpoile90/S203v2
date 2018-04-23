@@ -3,6 +3,7 @@
 # Due to the limitations on the servers memory this code may need some fine tuning
 # Currently no encryption on the link between app and db will add at some point
 ##
+from flask import jsonify
 from pymongo import MongoClient
 import scrape
 import json
@@ -58,3 +59,14 @@ def insertOrUpdate(name):
         insertAccount(name)
     except:
         updateAccount(name)
+
+def listBots():
+    x = WCollection.find({'probability': {'$gt': 75}, 'bot': "BOT"})
+    list = {}
+    for i in x:
+        i = dict(i)
+        i.pop('_id')
+        list[i['name']] = i
+
+    return list
+

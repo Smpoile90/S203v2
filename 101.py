@@ -133,6 +133,13 @@ def evaluateName(name):
 
     return jsonify(data)
 
+@app.route('/listBots')
+def listBots():
+    x = Mongo2.listBots()
+    print(x)
+    return jsonify(x)
+
+
 if __name__ == '__main__':
     tf.logging.set_verbosity(tf.logging.INFO)
     tf.app.run(main)
